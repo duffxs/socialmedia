@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .feed {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .feed-item {
+            background: #fafafa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Share Your Thoughts</h1>
+        <form id="submitForm">
+            <textarea id="postText" rows="4" style="width: 100%" placeholder="Write something..." required></textarea><br><br>
+            <button type="submit">Post</button>
+        </form>
+        <div id="feed" class="feed"></div>
+    </div>
+
+    <script>
+        const submitForm = document.getElementById('submitForm');
+        const postText = document.getElementById('postText');
+        const feed = document.getElementById('feed');
+
+        submitForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            
+            // Get the text input
+            const text = postText.value.trim();
+            
+            if (text) {
+                // Send text to the backend
+                await fetch('http://127.0.0.1:3000/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+});
+
+                // Reset the text area
+                postText.value = '';
+            }
+        });
+
+        async function fetchPosts() {
+    try {
+        const response = await fetch('http://127.0.0.1:3000/posts');  // Using async/await to fetch data
+        const posts = await response.json();  // Parsing the JSON response
+        feed.innerHTML = posts.map(post => `<div class="feed-item">${post.text}</div>`).join('');  // Update the feed
+    } catch (error) {
+        console.error('Error fetching posts:', error);  // Error handling
+    }
+}
+
+
+        // Fetch posts every 2 seconds to update the feed
+        setInterval(fetchPosts, 2000);
+        fetchPosts(); // Initial fetch
+    </script>
+</body>
+</html>
