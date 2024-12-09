@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
       {
-        "src": "public/**/*",
+        "src": "public/index.html",
         "use": "@vercel/static"
       },
       {
@@ -12,8 +12,12 @@
     ],
     "routes": [
       {
-        "src": "/api/(.*)",
+        "src": "/api/posts",
         "dest": "/api/posts.js"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/public/index.html"
       }
     ]
   }
