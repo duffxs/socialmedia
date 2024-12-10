@@ -1,3 +1,22 @@
+const mongoose = require('mongoose');
+
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://sbeanT8:bOrB8TkgrMrKGmRj@socialmedia.2tndl.mongodb.net/?retryWrites=true&w=majority&appName=socialMedia', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((error) => {
+  console.error('Error connecting to MongoDB:', error);
+});
+
+const postSchema = new mongoose.Schema({
+  text: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const Post = mongoose.model('Post', postSchema);
+
 module.exports = async (req, res) => {
   if (req.method === 'GET') {
     // Fetch all posts from the database
