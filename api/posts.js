@@ -2,6 +2,7 @@
 require('dotenv').config();
 
 const mongoose = require('mongoose');
+const xss = require('xss');  // Import the xss library for sanitization
 
 // Connect to MongoDB using the environment variable
 mongoose.connect(process.env.MONGODB_URI, {
@@ -45,8 +46,11 @@ module.exports = async (req, res) => {
         return res.status(400).send('Text exceeds the 280 character limit');
       }
 
+      // Sanitize the input to prevent HTML injection
+      const sanitizedText = xss(text);
+
       try {
-        await Post.create({ text });
+        await Post.create({ text: sanitizedText });
         res.status(200).send('Post added');
       } catch (error) {
         res.status(500).send('Error saving post');
