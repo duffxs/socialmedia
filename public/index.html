@@ -55,36 +55,45 @@
         const submitForm = document.getElementById('submitForm');
         const postText = document.getElementById('postText');
         const feed = document.getElementById('feed');
+        const maxLength = 280; // Set character limit
 
         submitForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             
-            // Get the text input
+            // Get the text input and trim whitespace
             const text = postText.value.trim();
             
-            if (text) {
-               // Change this URL to your Vercel URL
-            await fetch('https://socialmedia-nine-pi.vercel.app/api/posts', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text })
-            });
+            if (text.length > maxLength) {
+                alert(`Your post exceeds the character limit of ${maxLength} characters.`);
+                return;
+            }
 
-                // Reset the text area
-                postText.value = '';
+            if (text) {
+                try {
+                    // Send the post to the backend
+                    await fetch('https://socialmedia-nine-pi.vercel.app/api/posts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text })
+                    });
+
+                    // Reset the text area
+                    postText.value = '';
+                } catch (error) {
+                    console.error('Error posting:', error);
+                }
             }
         });
 
         async function fetchPosts() {
-    try {
-        const response = await fetch('https://socialmedia-nine-pi.vercel.app/api/posts');  // Using async/await to fetch data
-        const posts = await response.json();  // Parsing the JSON response
-        feed.innerHTML = posts.map(post => `<div class="feed-item">${post.text}</div>`).join('');  // Update the feed
-    } catch (error) {
-        console.error('Error fetching posts:', error);  // Error handling
-    }
-}
-
+            try {
+                const response = await fetch('https://socialmedia-nine-pi.vercel.app/api/posts');
+                const posts = await response.json();
+                feed.innerHTML = posts.map(post => `<div class="feed-item">${post.text}</div>`).join('');
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
 
         // Fetch posts every 2 seconds to update the feed
         setInterval(fetchPosts, 2000);
