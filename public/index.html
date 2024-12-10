@@ -55,18 +55,35 @@
     <div class="container">
         <h1>Share Your Thoughts</h1>
         <form id="submitForm">
-            <textarea id="postText" rows="4" placeholder="Write something..." required></textarea><br><br>
+            <textarea id="postText" rows="4" style="width: 100%" placeholder="Write something..." required></textarea><br><br>
             <button type="submit">Post</button>
         </form>
+    
+        <!-- Add the manual reload button -->
+        <button id="reloadButton">Reload Feed</button>
         <div id="feed" class="feed"></div>
     </div>
+    
 
     <script>
-        const submitForm = document.getElementById('submitForm');
+       const submitForm = document.getElementById('submitForm');
         const postText = document.getElementById('postText');
         const feed = document.getElementById('feed');
+        const reloadButton = document.getElementById('reloadButton');
         const maxLength = 280; // Set character limit
 
+        // Function to fetch posts from the backend
+        async function fetchPosts() {
+            try {
+                const response = await fetch('https://socialmedia-nine-pi.vercel.app/api/posts');
+                const posts = await response.json();
+                feed.innerHTML = posts.map(post => `<div class="feed-item">${post.text}</div>`).join('');
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
+
+        // Event listener for the form submission
         submitForm.addEventListener('submit', async (event) => {
             event.preventDefault();
             
@@ -89,25 +106,20 @@
 
                     // Reset the text area
                     postText.value = '';
+                    // Optionally, fetch the posts immediately after submitting
+                    fetchPosts();
                 } catch (error) {
                     console.error('Error posting:', error);
                 }
             }
         });
 
-        async function fetchPosts() {
-            try {
-                const response = await fetch('https://socialmedia-nine-pi.vercel.app/api/posts');
-                const posts = await response.json();
-                feed.innerHTML = posts.map(post => `<div class="feed-item">${post.text}</div>`).join('');
-            } catch (error) {
-                console.error('Error fetching posts:', error);
-            }
-        }
+        // Event listener for the reload button
+        reloadButton.addEventListener('click', fetchPosts);
 
-        // Fetch posts every 2 seconds to update the feed
-        // setInterval(fetchPosts, 2000000);
-        // fetchPosts(); // Initial fetch
+        // Optionally, you can fetch the posts on page load if you want them to show up initially
+        fetchPosts();
+
     </script>
 </body>
 </html>
