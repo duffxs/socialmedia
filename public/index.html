@@ -23,6 +23,8 @@
             background-color: white;
             box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            max-height: 90vh; /* Prevent the container from growing too large */
+            overflow-y: auto; /* Add scroll if content overflows */
         }
         h1 {
             text-align: center;
@@ -31,6 +33,8 @@
             margin-top: 20px;
             padding: 10px;
             border-top: 1px solid #ddd;
+            overflow-y: auto;
+            max-height: 300px; /* Limit the feed height */
         }
         .feed-item {
             background: #fafafa;
@@ -39,13 +43,19 @@
             margin: 10px 0;
             box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
         }
+        textarea {
+            width: 100%;
+            max-height: 200px; /* Set a max height for the textarea */
+            resize: vertical; /* Allow the user to resize it vertically */
+            overflow-y: auto; /* Enable scrolling if the content overflows */
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Share Your Thoughts</h1>
         <form id="submitForm">
-            <textarea id="postText" rows="4" style="width: 100%" placeholder="Write something..." required></textarea><br><br>
+            <textarea id="postText" rows="4" placeholder="Write something..." required></textarea><br><br>
             <button type="submit">Post</button>
         </form>
         <div id="feed" class="feed"></div>
