@@ -15,9 +15,12 @@ mongoose.connect(process.env.MONGODB_URI, {
     console.error('Error connecting to MongoDB:', error);
   });
 
-
 const postSchema = new mongoose.Schema({
-  text: { type: String, required: true },
+  text: { 
+    type: String, 
+    required: true, 
+    maxlength: 280, // Enforce 280 character limit
+  },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -35,7 +38,13 @@ module.exports = async (req, res) => {
   } else if (req.method === 'POST') {
     // Add a new post to the database
     const { text } = req.body;
+    
     if (text) {
+      // Check if the text exceeds the character limit
+      if (text.length > 280) {
+        return res.status(400).send('Text exceeds the 280 character limit');
+      }
+
       try {
         await Post.create({ text });
         res.status(200).send('Post added');
