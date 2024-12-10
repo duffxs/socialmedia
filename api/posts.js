@@ -1,14 +1,20 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 
-// Connect to MongoDB
-mongoose.connect('mongodb+srv://sbeanT8:bOrB8TkgrMrKGmRj@socialmedia.2tndl.mongodb.net/?retryWrites=true&w=majority&appName=socialMedia', {
+// Connect to MongoDB using the environment variable
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
-  console.log('Connected to MongoDB');
-}).catch((error) => {
-  console.error('Error connecting to MongoDB:', error);
-});
+})
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+  });
+
 
 const postSchema = new mongoose.Schema({
   text: { type: String, required: true },
